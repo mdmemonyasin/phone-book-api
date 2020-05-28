@@ -1,9 +1,9 @@
 const Contacts = require('../models/contact');
 
 exports.getContacts = (req, res, next) => {
+    const page = +req.query.page || 1;
     const items_per_page = 4;
     let total;
-    const page = +req.query.page || 1;
     Contacts.find().countDocuments()
         .then(numContacts => {
             total = numContacts;
@@ -14,11 +14,11 @@ exports.getContacts = (req, res, next) => {
             res.status(200).send({
                 contacts: contacts,
                 currPage: page,
-                hasNextPage: page * ITEMS_PER_PAGE < total,
+                hasNextPage: page * items_per_page < total,
                 hasPrevious: page > 1,
                 nextPage: page + 1,
                 previousPage: page - 1,
-                lastPage: Math.ceil(total / ITEMS_PER_PAGE),
+                lastPage: Math.ceil(total / items_per_page),
             });
         }).catch(err => {
             console.log(err);
