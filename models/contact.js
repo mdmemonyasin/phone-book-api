@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const contactsSchema = Schema({
     name: {
         type: String,
-        require: true
+        require: true,
     },
     number: {
         type: Array,

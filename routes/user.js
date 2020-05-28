@@ -7,6 +7,8 @@ router.get('/getContacts', userController.getContacts);
 
 router.post('/addContact', userController.addContact);
 
-router.put('/editContact');
+router.put('/editContact', userController.editContact);
+
+router.delete('/removeContact', userController.removeContact);
 
 module.exports = router;
