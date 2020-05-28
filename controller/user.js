@@ -1,4 +1,5 @@
 const Contacts = require('../models/contact');
+const {validationResult} = require('express-validator');
 
 exports.getContacts = (req, res, next) => {
     const page = +req.query.page || 1;
@@ -26,6 +27,12 @@ exports.getContacts = (req, res, next) => {
 }
 
 exports.addContact = (req, res, next) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
     const name = req.body.name;
     const number = req.body.number;
     const email = req.body.email;
@@ -54,6 +61,10 @@ exports.addContact = (req, res, next) => {
 }
 
 exports.removeContact = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
     const id = req.body.id;
     Contacts.findByIdAndDelete({ _id: id }).then(result => {
         res.status(200).send({
@@ -63,6 +74,10 @@ exports.removeContact = (req, res, next) => {
 }
 
 exports.editContact = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
     const id = req.body.id;
     const name = req.body.name;
     const number = req.bosy.number;
