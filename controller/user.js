@@ -1,12 +1,28 @@
 const Contacts = require('../models/contact');
 
 exports.getContacts = (req, res, next) => {
-    const page = req.params.page || 1;
-    Contacts.find().then(result => {
-        res.status(200).send(result);
-    }).catch(err => {
-        console.log(err);
-    });
+    const items_per_page = 4;
+    let total;
+    const page = +req.query.page || 1;
+    Contacts.find().countDocuments()
+        .then(numContacts => {
+            total = numContacts;
+            return Contacts.find()
+                .skip((page - 1) * items_per_page)
+                .limit(items_per_page)
+        }).then(contacts => {
+            res.status(200).send({
+                contacts: contacts,
+                currPage: page,
+                hasNextPage: page * ITEMS_PER_PAGE < total,
+                hasPrevious: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                lastPage: Math.ceil(total / ITEMS_PER_PAGE),
+            });
+        }).catch(err => {
+            console.log(err);
+        });
 }
 
 exports.addContact = (req, res, next) => {
