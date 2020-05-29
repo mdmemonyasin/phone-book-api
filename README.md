@@ -1,5 +1,5 @@
 
-###Instructions 
+### Instructions 
 
 --Git Clone 
 
@@ -26,15 +26,15 @@ For getting single contact details.
 
 Responce  = responce.data.contacts
 
-##2. Delete - /removeContact/?id
+## 3. Delete - /removeContact/?id
 
 For deleting perticular contact
 
-##3. Put - /editContact/?id
+## 4. Put - /editContact/?id
 
 For editing perticular contact
 
-##4. Get - /getFilter/?name&?number&?email
+## 5. Get - /getFilter/?name&?number&?email
 
 For Filtering according to one of the given condition
 
