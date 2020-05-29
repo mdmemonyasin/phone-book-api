@@ -5,6 +5,7 @@ const {check}  = require('express-validator');
 const userController = require('../controller/user');
 
 router.get('/getContacts', userController.getContacts);
+router.get('/getById',userController.getById);
 
 router.post('/addContact',[
     check('name').exists(),
@@ -12,14 +13,10 @@ router.post('/addContact',[
     check('email').exists()
 ], userController.addContact);
 
-router.put('/editContact',[
-    check('name').exists(),
-    check('number').exists(),
-    check('email').exists()
-], userController.editContact);
+router.put('/editContact', userController.editContact);
 
-router.delete('/removeContact',[
-    check("id").exists()
-], userController.removeContact);
+router.delete('/removeContact', userController.removeContact);
+
+router.get('/getFilter',userController.getFilter);
 
 module.exports = router;

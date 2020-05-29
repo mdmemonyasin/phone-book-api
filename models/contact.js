@@ -7,11 +7,11 @@ const contactsSchema = Schema({
         require: true,
     },
     number: {
-        type: Array,
+        type: String,
         require: true
     },
     email: {
-        type: Array,
+        type: String,
         require: true
     },
     dob: {

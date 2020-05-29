@@ -1,5 +1,5 @@
 const Contacts = require('../models/contact');
-const {validationResult} = require('express-validator');
+const { validationResult } = require('express-validator');
 
 exports.getContacts = (req, res, next) => {
     const page = +req.query.page || 1;
@@ -24,6 +24,22 @@ exports.getContacts = (req, res, next) => {
         }).catch(err => {
             console.log(err);
         });
+
+}
+
+exports.getById = (req,res,next) =>{
+    const id = req.query.id;
+    if(id){
+        Contacts.findById({_id: id}).then(reslult =>{
+            res.status(200).send({
+                contacts: reslult
+            });
+        }).catch(err =>{
+            res.status(400).send({
+                message: "User Not Found"
+            })
+        });
+    }
 }
 
 exports.addContact = (req, res, next) => {
@@ -38,7 +54,7 @@ exports.addContact = (req, res, next) => {
     const email = req.body.email;
     const dob = req.body.dob || null;
     let flag = false;
-    Contacts.findOne({ number: { $in: number } }).then(result => {
+    Contacts.findOne({ number: number }).then(result => {
         if (result) {
             res.status(400).send({
                 message: "Phone Number is already present"
@@ -61,11 +77,7 @@ exports.addContact = (req, res, next) => {
 }
 
 exports.removeContact = (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
-    }
-    const id = req.body.id;
+    const id = req.query.id;
     Contacts.findByIdAndDelete({ _id: id }).then(result => {
         res.status(200).send({
             message: "Contact Successfully Deleted"
@@ -74,24 +86,52 @@ exports.removeContact = (req, res, next) => {
 }
 
 exports.editContact = (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
-    }
-    const id = req.body.id;
-    const name = req.body.name;
-    const number = req.bosy.number;
-    const email = req.body.email;
-    const dob = req.body.dob;
-
-    Contacts.findByIdAndUpdate({
-        _id: id,
-        name: name, number: number, email: email, dob: dob
-    }).then(result => {
+    console.log(req.body);
+    const id = req.body.userData._id;
+    const name = req.body.name || req.body.userData.name;
+    const number = req.body.number|| req.body.userData.number;
+    const email = req.body.email || req.body.userData.email;
+    const dob = req.body.dob || req.body.userData.dob;
+    console.log(name);
+    Contacts.findOneAndUpdate(
+        {_id: id}, {$set: {
+        name: name, number: number, email: email, dob: dob}}
+    ).then(result => {
         res.status(200).send({
             message: "Contact Successfully Updated"
         })
     }).catch(err => {
-        res.send(500).send({ message: "Something went wrong" });
+        res.status(500).send({ message: "Something went wrong" });
     });
+}
+
+exports.getFilter = (req, res, next) => {
+    console.log(req.query);
+    const { name, email, number } = req.query;
+    if (name) {
+        Contacts.find({ name: { $regex: name, $options: "i" } }).then(result => {
+            if (result) {
+                res.status(200).send({
+                    result: result
+                })
+            }
+        })
+    } else if (email) {
+        Contacts.find({ email: email }).then(result => {
+            if (result) {
+                res.status(200).send({
+                    result: result
+                })
+            }
+        })
+    } else if (number) {
+        Contacts.find({ number: number }).then(result => {
+            console.log(result);
+            if (result) {
+                res.status(200).send({
+                    result: result
+                })
+            }
+        })
+    }
 }
