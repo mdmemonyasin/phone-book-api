@@ -3,13 +3,15 @@
 
 name: Node.js CI
 
-on:
+on: 
   workflow_dispatch:
     inputs:
-      deployBranch:
-        descriptions: 'Deploy Instance'
-        required: true,
-        default: 'deploy'
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Test scenario tags'  
       
         
 
@@ -18,21 +20,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo "Deploy Branch: ${{ github.event.inputs.deployBranch }}"
-  build:
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+        echo "Log level: ${{ github.event.inputs.logLevel }}"
+        echo "Tags: ${{ github.event.inputs.tags }}" 
