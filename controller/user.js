@@ -106,7 +106,6 @@ exports.editContact = (req, res, next) => {
 }
 
 exports.getFilter = (req, res, next) => {
-    console.log(req.query);
     const { name, email, number } = req.query;
     if (name) {
         Contacts.find({ name: { $regex: name, $options: "i" } }).then(result => {
